@@ -1,2 +1,6 @@
 # Tic-Tac-Toe
-OXO, or tic-tac-toe game made during freecodecamp certification
+Make your best to win this tic-tac-toe or OXO game. A project made during freecodecamp certification
+https://codepen.io/beumsk/pen/ZevLbx
+
+TODO:
+* improve AI
