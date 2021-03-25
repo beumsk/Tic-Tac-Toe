@@ -1,17 +1,17 @@
 
-// TODO create AI
+// improve AI
 
-var playerSign = "",
-    compSign = "",
-    grid = ["e","e","e", "e","e","e", "e","e","e"],
-    turn = 0,
-    next = 1;
+var playerSign = "";
+var compSign = "";
+var grid = ["e","e","e", "e","e","e", "e","e","e"];
+var turn = 0;
+var isFinished = false;
 
-var dark = document.querySelector("#dark"),
-    message = document.querySelector("#message"),
-    playX = document.querySelector("#playX"),
-    playO = document.querySelector("#playO"),
-    plays = document.querySelectorAll(".play");
+var dark = document.querySelector("#dark");
+var message = document.querySelector("#message");
+var playX = document.querySelector("#playX");
+var playO = document.querySelector("#playO");
+var plays = document.querySelectorAll(".play");
 
 playX.addEventListener("click", startGame);
 playO.addEventListener("click", startGame);
@@ -21,7 +21,7 @@ function startGame(e) {
   clearInterval(checkPageInterval);
   dark.classList.add("hidden");
   playerSign = e.target.getAttribute("data-sign");
-  compSign = playerSign == "x" ? "o" : "x";
+  compSign = playerSign === "x" ? "o" : "x";
   for (var i=0; i<plays.length; i++) {
     plays[i].addEventListener("click", playerMove);
   }
@@ -34,7 +34,7 @@ function playerMove(e) {
   grid[e.target.id] = playerSign;
   turn++;
   checker("player");
-  if (turn < 8 && next) {
+  if (turn < 8 && !isFinished) {
     setTimeout(function() {
       compMove();
     }, 200);
@@ -61,42 +61,38 @@ function compMove() {
 // end game checker (win, lose, tie)
 function checker(whoo) {
   // win
-  if (    (whoo === "player") 
-      && ((grid[0]===playerSign && grid[1]===playerSign && grid[2]===playerSign)
-      ||  (grid[3]===playerSign && grid[4]===playerSign && grid[5]===playerSign)
-      ||  (grid[6]===playerSign && grid[7]===playerSign && grid[8]===playerSign)
-      ||  (grid[0]===playerSign && grid[3]===playerSign && grid[6]===playerSign)
-      ||  (grid[1]===playerSign && grid[4]===playerSign && grid[7]===playerSign)
-      ||  (grid[2]===playerSign && grid[5]===playerSign && grid[8]===playerSign)
-      ||  (grid[0]===playerSign && grid[4]===playerSign && grid[8]===playerSign)
-      ||  (grid[2]===playerSign && grid[4]===playerSign && grid[6]===playerSign))
-    ) {
-    next = 0;
+  if ( (whoo === "player") && (gridCheck(playerSign)) ) {
+    isFinished = true;
     setTimeout(function() {
-      reset("You win !");
+      reset("You win!");
     }, 500);
   }
   // lose
-  else if ( (whoo === "comp") 
-        && ((grid[0]===compSign && grid[1]===compSign && grid[2]===compSign)
-        ||  (grid[3]===compSign && grid[4]===compSign && grid[5]===compSign)
-        ||  (grid[6]===compSign && grid[7]===compSign && grid[8]===compSign)
-        ||  (grid[0]===compSign && grid[3]===compSign && grid[6]===compSign)
-        ||  (grid[1]===compSign && grid[4]===compSign && grid[7]===compSign)
-        ||  (grid[2]===compSign && grid[5]===compSign && grid[8]===compSign)
-        ||  (grid[0]===compSign && grid[4]===compSign && grid[8]===compSign)
-        ||  (grid[2]===compSign && grid[4]===compSign && grid[6]===compSign))
-    ) {
+  else if ( (whoo === "comp") && (gridCheck(compSign)) ) {
     setTimeout(function() {
-      reset("You lose !");
+      reset("You lose!");
     }, 500);
   }
   // tie
   else if (turn === 9) {
     setTimeout(function() {
-      reset("You tied !");
+      reset("You tie!");
     }, 500);
   }
+}
+
+// check grid
+function gridCheck(sign) {
+  return (
+        (grid[0]===sign && grid[1]===sign && grid[2]===sign)
+    ||  (grid[3]===sign && grid[4]===sign && grid[5]===sign)
+    ||  (grid[6]===sign && grid[7]===sign && grid[8]===sign)
+    ||  (grid[0]===sign && grid[3]===sign && grid[6]===sign)
+    ||  (grid[1]===sign && grid[4]===sign && grid[7]===sign)
+    ||  (grid[2]===sign && grid[5]===sign && grid[8]===sign)
+    ||  (grid[0]===sign && grid[4]===sign && grid[8]===sign)
+    ||  (grid[2]===sign && grid[4]===sign && grid[6]===sign)
+  );
 }
 
 // reset func
@@ -108,7 +104,7 @@ function reset(msg) {
   dark.classList.remove("hidden");
   grid = ["e","e","e", "e","e","e", "e","e","e"];
   turn = 0;
-  next = 1;
+  isFinished = false;
   for (var j=0; j<plays.length; j++) {
     plays[j].innerHTML = "";
     plays[j].classList.add("playable");
